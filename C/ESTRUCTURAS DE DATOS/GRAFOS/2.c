@@ -163,6 +163,50 @@
             + contarNodosLigadosMen(&((*ptrRef)->ptrDer), dato) 
             + contarNodosLigadosMen(&((*ptrRef)->ptrIzq), dato);
     }
+    int eliminarNodo(struct Nodo **ptrRef, int dato){
+        struct Nodo *nodoBasura;
+        if(*ptrRef == NULL) return 1; //arbol vacio
+        if(dato < (*ptrRef) -> dato) eliminarNodo(&(*ptrRef)->ptrIzq , dato);
+        if(dato > (*ptrRef) -> dato) eliminarNodo(&(*ptrRef)->ptrDer , dato);
+
+        if((*ptrRef) -> ptrDer == NULL && (*ptrRef) -> ptrDer == NULL){//si el nodo es hoja
+            free((*ptrRef));
+            *ptrRef = NULL;
+        }else if((*ptrRef) -> ptrDer == NULL){//solo nodo izquierdo
+            nodoBasura = *ptrRef;
+            *ptrRef = (*ptrRef) -> ptrIzq;
+            free(nodoBasura);
+        }else if((*ptrRef) -> ptrIzq == NULL){//solo nodo derecho
+            nodoBasura = *ptrRef;
+            *ptrRef = (*ptrRef) -> ptrDer;
+            free(nodoBasura);
+        }else{//los 2 nodos
+            
+            nodoBasura = *ptrRef;
+            //colocar el nodo menor como raiz
+            if((*ptrRef)->ptrDer->ptrIzq > (*ptrRef)->ptrDer->ptrDer){
+                *ptrRef = (*ptrRef) -> ptrIzq;
+                (*ptrRef) -> ptrDer = nodoBasura -> ptrDer;
+            }else{
+                *ptrRef = (*ptrRef) -> ptrDer;
+                (*ptrRef) -> ptrIzq = nodoBasura -> ptrIzq;
+            }
+            free(nodoBasura);   
+        }
+        return 0;
+    }
+    int eliminarNodoMenor(struct Nodo **ptrRef){
+        if(*ptrRef == NULL) return 0;
+        int dato;
+        if((*ptrRef)->ptrIzq == NULL){
+            dato = (*ptrRef) ->dato;
+
+        }
+
+    }
+    void eliminarNodoMayor(){
+
+    }
 int menu(){
     int opc;
     printf("\nMenu");
@@ -185,7 +229,10 @@ int menu(){
     printf("\n17.Nodos ligados(mayor)");
     printf("\n18.Suma Nodos ligados(mayor)");
     printf("\n19.Numero Nodos ligados(mayor)");
-    printf("\n20.Salir");
+    printf("\n20.Eliminar Nodo");
+    printf("\n21.Eliminar Nodo Menor.");
+    printf("\n22.Eliminar Nodo Mayor.");
+    printf("\n23.Salir");
     printf("\nIngresa opcion:");
     scanf("%d",&opc);
     return opc;
@@ -250,32 +297,51 @@ int main(){
             printf("\nNODO MENOR: %d", encontrarElemMenor(ptrRef2));
             break;
         case 17: {
-            int valor;
             printf("\nIngrese valor de referencia: ");
-            scanf("%d", &valor);
-            printf("\nNodos mayores a %d: ", valor);
-            nodosLigadosMay(ptrRef2, valor);
+            scanf("%d", &dato);
+            printf("\nNodos mayores a %d: ", dato);
+            nodosLigadosMay(ptrRef2, dato);
             printf("\n");
             break;
         }
         case 18: {
-            int valor;
             printf("\nIngrese valor de referencia: ");
-            scanf("%d", &valor);
-            printf("\nSUMA NODOS MAYORES A %d: %d", valor, sumaNodosLigadosMay(ptrRef2, valor));
+            scanf("%d", &dato);
+            printf("\nSUMA NODOS MAYORES A %d: %d", dato, sumaNodosLigadosMay(ptrRef2, dato));
             printf("\n");
             break;
         }
         case 19: {
-            int valor;
             printf("\nIngrese valor de referencia: ");
-            scanf("%d", &valor);
-            printf("\nNUMERO NODOS MAYORES A %d: %d", valor, contarNodosLigadosMay(ptrRef2, valor));
+            scanf("%d", &dato);
+            printf("\nNUMERO NODOS MAYORES A %d: %d", valor, contarNodosLigadosMay(ptrRef2, dato));
             printf("\n");
             break;
         }
-        case 20:
-            printf("\nSaliendo del programa...\n");
+        case 20: { //eliminar nodo
+            printf("\nIngrese valor a eliminar: ");
+            scanf("%d", &dato);
+            if(eliminarNodo(ptrRef2,dato) == 1){
+                printf("\nDato no existe");
+            }else{
+                printf("\nDato eliminiado: %d", dato);
+            }
+            break;
+        }
+        case 21: { //eliminar nodo  menor
+            printf("\nIngrese valor de referencia: ");
+            scanf("%d", &dato);
+
+            printf("\n");
+            break;
+        }
+        case 22: {//eliminar nodo mayor
+            printf("\nIngrese valor de referencia: ");
+            scanf("%d", &dato);
+            printf("\n");
+            break;
+        }
+        case 23:
             exit(0);
             break;    
         default:
