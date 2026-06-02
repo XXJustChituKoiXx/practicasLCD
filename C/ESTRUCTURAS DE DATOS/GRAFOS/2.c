@@ -157,56 +157,85 @@
             + contarNodosLigadosMay(&((*ptrRef)->ptrIzq), dato);
     }
 
-    int contarNodosLigadosMen(struct Nodo **ptrRef, int dato) {
-        if(*ptrRef == NULL) return 0;
-        return ((*ptrRef)->dato < dato ? 1 : 0) 
-            + contarNodosLigadosMen(&((*ptrRef)->ptrDer), dato) 
-            + contarNodosLigadosMen(&((*ptrRef)->ptrIzq), dato);
-    }
-    int eliminarNodo(struct Nodo **ptrRef, int dato){
-        struct Nodo *nodoBasura;
-        if(*ptrRef == NULL) return 1; //arbol vacio
-        if(dato < (*ptrRef) -> dato) eliminarNodo(&(*ptrRef)->ptrIzq , dato);
-        if(dato > (*ptrRef) -> dato) eliminarNodo(&(*ptrRef)->ptrDer , dato);
-
-        if((*ptrRef) -> ptrDer == NULL && (*ptrRef) -> ptrDer == NULL){//si el nodo es hoja
-            free((*ptrRef));
+int contarNodosLigadosMen(struct Nodo **ptrRef, int dato) {
+    if(*ptrRef == NULL) return 0;
+    return ((*ptrRef)->dato < dato ? 1 : 0) 
+        + contarNodosLigadosMen(&((*ptrRef)->ptrDer), dato) 
+        + contarNodosLigadosMen(&((*ptrRef)->ptrIzq), dato);
+}
+int eliminarNodo(struct Nodo **ptrRef, int dato){
+    struct Nodo *nodoBasura;
+    if(*ptrRef == NULL) return 1; //arbol vacio
+    
+    if(dato < (*ptrRef)->dato) return eliminarNodo(&(*ptrRef)->ptrIzq, dato);
+    else if(dato > (*ptrRef)->dato) return eliminarNodo(&(*ptrRef)->ptrDer, dato);
+    else {
+        nodoBasura = *ptrRef;
+        if((*ptrRef)->ptrIzq == NULL && (*ptrRef)->ptrDer == NULL) {
+            //Nodo hoja
+            free(*ptrRef);
             *ptrRef = NULL;
-        }else if((*ptrRef) -> ptrDer == NULL){//solo nodo izquierdo
-            nodoBasura = *ptrRef;
-            *ptrRef = (*ptrRef) -> ptrIzq;
+        }
+        else if((*ptrRef)->ptrIzq == NULL) {
+            //Solo hijo derecho
+            *ptrRef = (*ptrRef)->ptrDer;
             free(nodoBasura);
-        }else if((*ptrRef) -> ptrIzq == NULL){//solo nodo derecho
-            nodoBasura = *ptrRef;
-            *ptrRef = (*ptrRef) -> ptrDer;
+        }
+        else if((*ptrRef)->ptrDer == NULL) {
+            //Solo hijo izquierdo
+            *ptrRef = (*ptrRef)->ptrIzq;
             free(nodoBasura);
-        }else{//los 2 nodos
-            
-            nodoBasura = *ptrRef;
-            //colocar el nodo menor como raiz
-            if((*ptrRef)->ptrDer->ptrIzq > (*ptrRef)->ptrDer->ptrDer){
-                *ptrRef = (*ptrRef) -> ptrIzq;
-                (*ptrRef) -> ptrDer = nodoBasura -> ptrDer;
-            }else{
-                *ptrRef = (*ptrRef) -> ptrDer;
-                (*ptrRef) -> ptrIzq = nodoBasura -> ptrIzq;
+        }
+        else {
+            //Dos hijos
+            struct Nodo *ptrAva = (*ptrRef)->ptrDer;
+            struct Nodo *ptrAtr = *ptrRef;
+            while(ptrAva->ptrIzq != NULL) {
+                ptrAtr = ptrAva;
+                ptrAva = ptrAva->ptrIzq;
             }
-            free(nodoBasura);   
+            (*ptrRef) -> dato = ptrAva->dato;
+            if(ptrAtr == *ptrRef) {
+                ptrAtr -> ptrDer = ptrAva->ptrDer;
+            } else {
+                ptrAtr -> ptrIzq = ptrAva->ptrDer;
+            }
+            
+            free(ptrAva);
         }
         return 0;
     }
-    int eliminarNodoMenor(struct Nodo **ptrRef){
-        if(*ptrRef == NULL) return 0;
-        int dato;
-        if((*ptrRef)->ptrIzq == NULL){
-            dato = (*ptrRef) ->dato;
-
-        }
-
+}
+void eliminarNodoMenor(struct Nodo **ptrRef){
+    if(*ptrRef == NULL) {
+        printf("Arbol vacio\n");
+        return;
     }
-    void eliminarNodoMayor(){
-
+    if((*ptrRef)->ptrIzq != NULL) {
+        eliminarNodoMenor(&((*ptrRef)->ptrIzq));
+    } else {
+        struct Nodo *nodoBasura = *ptrRef;
+        printf("Dato eliminado: %d\n", (*ptrRef)->dato);
+        *ptrRef = (*ptrRef)->ptrDer;
+        
+        free(nodoBasura);
     }
+}
+
+void eliminarNodoMayor(struct Nodo **ptrRef){
+    if(*ptrRef == NULL) {
+        printf("\nArbol vacio");
+        return;
+    }
+    if((*ptrRef)->ptrDer != NULL) {
+        eliminarNodoMayor(&((*ptrRef)->ptrDer));
+    } else {
+        struct Nodo *nodoBasura = *ptrRef;
+        printf("\nDato eliminado: %d", (*ptrRef)->dato);
+        *ptrRef = (*ptrRef)->ptrIzq;
+        free(nodoBasura);
+    }
+}
 int menu(){
     int opc;
     printf("\nMenu");
@@ -314,7 +343,7 @@ int main(){
         case 19: {
             printf("\nIngrese valor de referencia: ");
             scanf("%d", &dato);
-            printf("\nNUMERO NODOS MAYORES A %d: %d", valor, contarNodosLigadosMay(ptrRef2, dato));
+            printf("\nNUMERO NODOS MAYORES A %d: %d", dato, contarNodosLigadosMay(ptrRef2, dato));
             printf("\n");
             break;
         }
@@ -329,16 +358,11 @@ int main(){
             break;
         }
         case 21: { //eliminar nodo  menor
-            printf("\nIngrese valor de referencia: ");
-            scanf("%d", &dato);
-
-            printf("\n");
+            eliminarNodoMenor(ptrRef2);
             break;
         }
         case 22: {//eliminar nodo mayor
-            printf("\nIngrese valor de referencia: ");
-            scanf("%d", &dato);
-            printf("\n");
+            eliminarNodoMayor(ptrRef2);
             break;
         }
         case 23:
