@@ -75,11 +75,11 @@
         if((*ptrRef) -> ptrDer == NULL && (*ptrRef) -> ptrIzq == NULL) return 1;
         return (contarNodosHoja(&((*ptrRef) -> ptrDer)) + contarNodosHoja(&((*ptrRef) -> ptrIzq)));
     }
-    int sumarNodosHoja(struct Nodo **ptrRef) {
-        if(*ptrRef == NULL) return 0;
-        if((*ptrRef)->ptrDer == NULL && (*ptrRef)->ptrIzq == NULL) return (*ptrRef)->dato; 
-        return (sumarNodosHoja(&((*ptrRef)->ptrDer)) + sumarNodosHoja(&((*ptrRef)->ptrIzq)));
-    } 
+int sumarNodosHoja(struct Nodo **ptrRef) {
+    if(*ptrRef == NULL) return 0;
+    if((*ptrRef)->ptrDer == NULL && (*ptrRef)->ptrIzq == NULL) return (*ptrRef)->dato; 
+    return (sumarNodosHoja(&((*ptrRef)->ptrDer)) + sumarNodosHoja(&((*ptrRef)->ptrIzq)));
+} 
 
     int sumarNodosInternos(struct Nodo **ptrRef) {
         if(*ptrRef == NULL) return 0;
@@ -117,11 +117,11 @@
         if((*ptrRef)->ptrDer == NULL) return (*ptrRef)->dato;
         return encontrarElemGrande(&((*ptrRef)->ptrDer)); 
     }
-    int encontrarElemMenor(struct Nodo **ptrRef){
-        if(*ptrRef == NULL) return 0;
-        if((*ptrRef)->ptrIzq == NULL) return (*ptrRef)->dato;
-        return encontrarElemMenor(&((*ptrRef)->ptrIzq)); 
-    }
+int encontrarElemMenor(struct Nodo **ptrRef){
+    if(*ptrRef == NULL) return 0;
+    if((*ptrRef)->ptrIzq == NULL) return (*ptrRef)->dato;
+    return encontrarElemMenor(&((*ptrRef)->ptrIzq)); 
+}
     void nodosLigadosMay(struct Nodo **ptrRef, int dato) {
         if(*ptrRef != NULL) {
             nodosLigadosMay(&((*ptrRef)->ptrDer), dato);
@@ -136,31 +136,25 @@
         nodosLigadosMen(&((*ptrRef)->ptrIzq), dato); 
         }
     }   
-    int sumaNodosLigadosMay(struct Nodo **ptrRef, int dato) {
-        if(*ptrRef == NULL) return 0;
-        return ((*ptrRef)->dato > dato ? (*ptrRef)->dato : 0) 
-            + sumaNodosLigadosMay(&((*ptrRef)->ptrDer), dato) 
-            + sumaNodosLigadosMay(&((*ptrRef)->ptrIzq), dato);
-    }
+int sumaNodosLigadosMay(struct Nodo **ptrRef, int dato) {
+    if(*ptrRef == NULL) return 0;
+    return ((*ptrRef)->dato > dato ? (*ptrRef)->dato : 0) + sumaNodosLigadosMay(&((*ptrRef)->ptrDer), dato) + sumaNodosLigadosMay(&((*ptrRef)->ptrIzq), dato);
+}
 
-    int sumaNodosLigadosMen(struct Nodo **ptrRef, int dato) {
-        if(*ptrRef == NULL) return 0;
-        return ((*ptrRef)->dato < dato ? (*ptrRef)->dato : 0) 
-            + sumaNodosLigadosMen(&((*ptrRef)->ptrDer), dato) 
-            + sumaNodosLigadosMen(&((*ptrRef)->ptrIzq), dato);
-    }
+int sumaNodosLigadosMen(struct Nodo **ptrRef, int dato) {
+    if(*ptrRef == NULL) return 0;
+    return ((*ptrRef)->dato < dato ? (*ptrRef)->dato : 0) + sumaNodosLigadosMen(&((*ptrRef)->ptrDer), dato) + sumaNodosLigadosMen(&((*ptrRef)->ptrIzq), dato);
+}
 
-    int contarNodosLigadosMay(struct Nodo **ptrRef, int dato) {
-        if(*ptrRef == NULL) return 0;
-        return ((*ptrRef)->dato > dato ? 1 : 0) 
-            + contarNodosLigadosMay(&((*ptrRef)->ptrDer), dato) 
-            + contarNodosLigadosMay(&((*ptrRef)->ptrIzq), dato);
-    }
+int contarNodosLigadosMay(struct Nodo **ptrRef, int dato) {
+    if(*ptrRef == NULL) return 0;
+    return ((*ptrRef)->dato > dato ? 1 : 0) + contarNodosLigadosMay(&((*ptrRef)->ptrDer), dato) 
+        + contarNodosLigadosMay(&((*ptrRef)->ptrIzq), dato);
+}
 
 int contarNodosLigadosMen(struct Nodo **ptrRef, int dato) {
     if(*ptrRef == NULL) return 0;
-    return ((*ptrRef)->dato < dato ? 1 : 0) 
-        + contarNodosLigadosMen(&((*ptrRef)->ptrDer), dato) 
+    return ((*ptrRef)->dato < dato ? 1 : 0) + contarNodosLigadosMen(&((*ptrRef)->ptrDer), dato) 
         + contarNodosLigadosMen(&((*ptrRef)->ptrIzq), dato);
 }
 int eliminarNodo(struct Nodo **ptrRef, int dato){
@@ -236,6 +230,16 @@ void eliminarNodoMayor(struct Nodo **ptrRef){
         free(nodoBasura);
     }
 }
+void eliminarNodoConUnHijo(struct Nodo **ptrRef) {
+    struct Nodo *nodoBasura;
+    if(*ptrRef == NULL) {
+        printf("Arbol vacio\n");
+        return;
+    }
+    if((*ptrRef)->ptrDer != NULL && (*ptrRef)->ptrIzq != NULL)
+    
+
+}
 int menu(){
     int opc;
     printf("\nMenu");
@@ -261,7 +265,8 @@ int menu(){
     printf("\n20.Eliminar Nodo");
     printf("\n21.Eliminar Nodo Menor.");
     printf("\n22.Eliminar Nodo Mayor.");
-    printf("\n23.Salir");
+    printf("\n23.Eliminar Nodo con 1 hijo.");
+    printf("\n24.Salir");
     printf("\nIngresa opcion:");
     scanf("%d",&opc);
     return opc;
