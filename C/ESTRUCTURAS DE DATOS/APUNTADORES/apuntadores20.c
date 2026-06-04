@@ -1,39 +1,87 @@
-//calcular estadisticas con estructuras y apuntadores
-#include<stdio.h>
-#include<stdlib.h>
-#include<math.h>
+    //calcular estadisticas con estructuras y apuntadores
+    #include<stdio.h>
+    #include<stdlib.h>
+    #include<math.h>
+    #define TAM 5
+    struct DataEst {
+        int arreglo[TAM];
+        int numDatos;
+        float prom;
+        int *ptr; 
+    };
 
-struct DataEst {
-    int arreglo[20];
-    int numDatos;
-    float prom,datos;
-    int *ptr; 
-};
+    int meterDatos(struct DataEst *miptr){
+        if(miptr->ptr >= &miptr -> arreglo[TAM-1]) return 1;
+        scanf("%d",miptr->ptr);
+        (miptr -> numDatos)++;
+        (miptr->ptr)++;
+        return 0;
+    }
 
-int meterDatos(struct DataEst data){
+    int calcularEstadisticas(struct DataEst *miptr){
+        if(miptr->numDatos == 0){
+            printf("\nNo hay datos capturados");
+            return 1;
+        }
 
+        int suma = 0;
+        float sumaCuadrados = 0;
+        float desv;
+        int *aux;
 
-    return 0;
-}
+        // Promedio
+        for(aux = miptr->arreglo;aux < miptr->arreglo + miptr->numDatos;aux++){
+            suma += *aux;
+        }
 
-int calcularEstadisticas(struct DataEst data){
-    //Promedio
+        miptr->prom = (float)suma / miptr->numDatos;
 
-    //Desviacion estandar
+        // Desviación estándar
+        for(aux = miptr->arreglo;aux < miptr->arreglo + miptr->numDatos;aux++){
+            sumaCuadrados += pow(*aux - miptr->prom, 2);
+        }
 
-    return 0;
-}
+        desv = sqrt(sumaCuadrados / miptr->numDatos);
 
-int menu(struct DataEst data){
+        printf("\nPromedio = %.2f", miptr->prom);
+        printf("\nDesviacion estandar = %.2f", desv);
 
-    return 0;
-}
+        return 0;
+    }
 
-int main(){
-    struct DataEst miDataEst,*miptr;
-    miptr = &miDataEst;
+    int menu(){
+        int opc;
+        printf("\n MENÚ");
+        printf("\n 1.Igresar Dato");
+        printf("\n 2.Calcular estadisticas");
+        printf("\n 3.Salir");
+        scanf("%d",&opc);
+        return opc;
+    }
 
-    
-
-    return 0;
-}
+    int main(){
+        struct DataEst miDataEst,*miptr;
+        miptr = &miDataEst;
+        miptr -> ptr = miptr ->arreglo;
+        miptr -> numDatos = 0;
+        for(;;){
+            switch (menu()){
+            case 1:
+                if(meterDatos(miptr)!=0){
+                    printf("\n Arreglo lleno");
+                }else{
+                    printf("\n Dato Agrgado");
+                }
+                break;
+            case 2:
+                calcularEstadisticas(miptr);
+            break;
+            case 3:
+                exit(0);
+                break;
+            default:
+                break;
+            }
+        }
+        return 0;
+    }

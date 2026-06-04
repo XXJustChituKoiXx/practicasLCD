@@ -48,7 +48,7 @@ int main(){
     char cadena[30],*ptrC;
     struct Nodo *ptrRef;
     ptrRef = crearNodo("");
-    strcpy(cadena,"uwu");
+    gets(cadena);
     ptrC = cadena;
 
     while(*ptrC != '\0'){
