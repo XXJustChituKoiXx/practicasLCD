@@ -1,4 +1,4 @@
-//con nodo de cabecera
+//con nodo de cabecera pila enlsada 
 #include <stdio.h>
 #include <stdlib.h>
 

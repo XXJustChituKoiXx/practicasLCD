@@ -65,6 +65,10 @@ int sacarDato(struct Nodo *ptrRef, int *dato)
     struct Nodo *ptrBasura, *ptrAtras;
     ptrBasura = ptrRef->ptrSig;
     ptrAtras = ptrBasura;
+    if(ptrRef ->ptrSig == NULL){
+        printf("Lista vacia");
+        return 0;
+    }
     while (ptrBasura->key != *dato || ptrBasura != NULL)
     {
         ptrAtras = ptrBasura;
