@@ -300,39 +300,61 @@ void eliminarNodo2Hijos(struct Nodo **ptrRef){
         free(ptrAva);
     }
 }
+
+int buscarNodo(struct Nodo **ptrRef, int dato) {
+    if (*ptrRef == NULL) return 0;
+    if ((*ptrRef)->dato == dato) return 1;
+    if (dato < (*ptrRef)->dato)
+        return buscarNodo(&((*ptrRef)->ptrIzq), dato);
+    else
+        return buscarNodo(&((*ptrRef)->ptrDer), dato);
+}
+
+int contarNodosUnHijo(struct Nodo **ptrRef) {
+    if (*ptrRef == NULL) return 0;
+    int tieneUnHijo = ((*ptrRef)->ptrIzq != NULL) ^ ((*ptrRef)->ptrDer != NULL);
+    return tieneUnHijo + contarNodosUnHijo(&((*ptrRef)->ptrIzq)) + contarNodosUnHijo(&((*ptrRef)->ptrDer));
+}
+
+
+
 int menu(){
     int opc;
-    printf("\nMenu");
-    printf("\n1.Meter");
-    printf("\n2.Imprimir inorder");
-    printf("\n3.Imprimir preorder");
-    printf("\n4.Imprimir postorder");
-    printf("\n5.Imprimir arbol");
-    printf("\n6.Sumar Nodos");
-    printf("\n7.Contar Nodos");
-    printf("\n8.Contar Nodos Hoja");
-    printf("\n9.Sumar Nodos Hoja");
-    printf("\n10.Contar Nodos Internos");
-    printf("\n11.Sumar Nodos Internos");
-    printf("\n12.Contar Nodos pares");
-    printf("\n13.Sumar Nodos pares");
-    printf("\n14.Imprimir descendente");
-    printf("\n15.Nodo Mayor");
-    printf("\n16.Nodo Menor");
-    printf("\n17.Nodos ligados(mayor)");
-    printf("\n18.Suma Nodos ligados(mayor)");
-    printf("\n19.Numero Nodos ligados(mayor)");
-    printf("\n20.Eliminar Nodo");
-    printf("\n21.Eliminar Nodo Menor.");
-    printf("\n22.Eliminar Nodo Mayor.");
-    printf("\n23.Eliminar Nodo con 1 hijo.");
-    printf("\n24.Eliminar Nodos hoja.");
-    printf("\n25.Eliminar Nodos con 2 hios.");
-    printf("\n26.Salir");
-    printf("\nIngresa opcion:");
+    printf("\n=== MENU PRINCIPAL ===");
+    printf("\n1. Insertar nodo (Meter)");
+    printf("\n2. Imprimir arbol completo");
+    printf("\n3. Recorrido Inorder");
+    printf("\n4. Recorrido Preorder");
+    printf("\n5. Recorrido Postorder");
+    printf("\n6. Imprimir descendente");
+    printf("\n7. Contar nodos");
+    printf("\n8. Contar nodos hoja");
+    printf("\n9. Contar nodos internos");
+    printf("\n10. Contar nodos pares");
+    printf("\n11. Contar nodos con un hijo");
+    printf("\n12. Contar nodos ligados al mayor");
+    printf("\n13. Sumar nodos (todo el arbol)");
+    printf("\n14. Sumar nodos hoja");
+    printf("\n15. Sumar nodos internos");
+    printf("\n16. Sumar nodos pares");
+    printf("\n17. Sumar nodos ligados al mayor");
+    printf("\n18. Buscar elemento (pertenencia)");
+    printf("\n19. Obtener elemento mayor");
+    printf("\n20. Obtener elemento menor");
+    printf("\n21. Imprimir nodos mayores a un numero");
+    printf("\n22. Sumar nodos mayores a un numero");
+    printf("\n23. Eliminar nodo especifico");
+    printf("\n24. Eliminar nodo menor");
+    printf("\n25. Eliminar nodo mayor");
+    printf("\n26. Eliminar nodos hoja");
+    printf("\n27. Eliminar nodos con un hijo");
+    printf("\n28. Eliminar nodos con dos hijos");
+    printf("\n29. Salir");
+    printf("\nIngrese opcion: ");
     scanf("%d",&opc);
     return opc;
 }
+
 
 int main(){
     struct Nodo *ptrRef1, **ptrRef2;
@@ -342,113 +364,151 @@ int main(){
 
     for(;;){
         switch (menu()){
-        case 1:
-            printf("\nIngrese un entero:");
+        case 1:  // Insertar nodo
+            printf("\nIngrese un entero: ");
             scanf("%d",&dato);
             insertarNodo(ptrRef2,dato);
             break;
-        case 2:
-            imprimirInorder(ptrRef2);
-            break;
-        case 3:
-            imprPreorder(ptrRef2);
-            break;
-        case 4:
-            imprPostorder(ptrRef2);
-            break;
-        case 5:
+            
+        case 2:  // Imprimir arbol completo
             imprimirArbol(ptrRef1,1);
             break;
-        case 6:
-            printf("\nTOTAL DE SUMA DE LOS NODOS: %d", sumarNodo(ptrRef2));
+            
+        case 3:  // Inorder
+            imprimirInorder(ptrRef2);
             break;
-        case 7:
-            printf("\nNODOS INGRESADOS: %d", contarNodos(ptrRef2));
+            
+        case 4:  // Preorder
+            imprPreorder(ptrRef2);
             break;
-        case 8:
-            printf("\nNODOS HOJA: %d", contarNodosHoja(ptrRef2));
+            
+        case 5:  // Postorder
+            imprPostorder(ptrRef2);
             break;
-        case 9:
-            printf("\nSUMA NODOS HOJA: %d", sumarNodosHoja(ptrRef2));
-            break;
-        case 10:
-            printf("\nNODOS INTERNOS: %d", contarNodosInternos(ptrRef2)); 
-            break;
-        case 11:
-            printf("\nSUMA NODOS INTERNOS: %d", sumarNodosInternos(ptrRef2)); 
-            break;
-        case 12:
-            printf("\nNODOS PARES: %d", contarNodosPares(ptrRef2)); 
-            break;
-        case 13:
-            printf("\nSUMA NODOS PARES: %d", sumarNodosPares(ptrRef2)); 
-            break;
-        case 14:
+            
+        case 6:  // Imprimir descendente
             imprimirDescend(ptrRef2);
             break;
-        case 15:
-            printf("\nNODO MAYOR: %d", encontrarElemGrande(ptrRef2)); 
+            
+        case 7:  // Contar nodos
+            printf("\nNODOS TOTALES: %d", contarNodos(ptrRef2));
             break;
-        case 16:
-            printf("\nNODO MENOR: %d", encontrarElemMenor(ptrRef2));
+            
+        case 8:  // Contar nodos hoja
+            printf("\nNODOS HOJA: %d", contarNodosHoja(ptrRef2));
             break;
-        case 17: {
+            
+        case 9:  // Contar nodos internos
+            printf("\nNODOS INTERNOS: %d", contarNodosInternos(ptrRef2));
+            break;
+            
+        case 10:  // Contar nodos pares
+            printf("\nNODOS PARES: %d", contarNodosPares(ptrRef2));
+            break;
+            
+        case 11:  // Contar nodos con un hijo
+            printf("\nNODOS CON UN SOLO HIJO: %d", contarNodosUnHijo(ptrRef2));
+            break;
+            
+        case 12:  // Contar nodos ligados al mayor
+            printf("\nIngrese valor de referencia: ");
+            scanf("%d", &dato);
+            printf("\nNODOS MAYORES A %d: %d", dato, contarNodosLigadosMay(ptrRef2, dato));
+            break;
+            
+        case 13:  // Sumar nodos (todo el arbol)
+            printf("\nSUMA TOTAL DE NODOS: %d", sumarNodo(ptrRef2));
+            break;
+            
+        case 14:  // Sumar nodos hoja
+            printf("\nSUMA NODOS HOJA: %d", sumarNodosHoja(ptrRef2));
+            break;
+            
+        case 15:  // Sumar nodos internos
+            printf("\nSUMA NODOS INTERNOS: %d", sumarNodosInternos(ptrRef2));
+            break;
+            
+        case 16:  // Sumar nodos pares
+            printf("\nSUMA NODOS PARES: %d", sumarNodosPares(ptrRef2));
+            break;
+            
+        case 17:  // Sumar nodos ligados al mayor
+            printf("\nIngrese valor de referencia: ");
+            scanf("%d", &dato);
+            printf("\nSUMA NODOS MAYORES A %d: %d", dato, sumaNodosLigadosMay(ptrRef2, dato));
+            break;
+            
+        case 18:  // Buscar elemento (pertenencia)
+            printf("\nIngrese valor a buscar: ");
+            scanf("%d", &dato);
+            if(buscarNodo(ptrRef2, dato))
+                printf("\nEl elemento %d SI pertenece al arbol\n", dato);
+            else
+                printf("\nEl elemento %d NO pertenece al arbol\n", dato);
+            break;
+            
+        case 19:  // Obtener elemento mayor
+            printf("\nELEMENTO MAYOR: %d", encontrarElemGrande(ptrRef2));
+            break;
+            
+        case 20:  // Obtener elemento menor
+            printf("\nELEMENTO MENOR: %d", encontrarElemMenor(ptrRef2));
+            break;
+            
+        case 21:  // Imprimir nodos mayores a un numero
             printf("\nIngrese valor de referencia: ");
             scanf("%d", &dato);
             printf("\nNodos mayores a %d: ", dato);
             nodosLigadosMay(ptrRef2, dato);
             printf("\n");
             break;
-        }
-        case 18: {
+            
+        case 22:  // Sumar nodos mayores a un numero
             printf("\nIngrese valor de referencia: ");
             scanf("%d", &dato);
             printf("\nSUMA NODOS MAYORES A %d: %d", dato, sumaNodosLigadosMay(ptrRef2, dato));
             printf("\n");
             break;
-        }
-        case 19: {
-            printf("\nIngrese valor de referencia: ");
-            scanf("%d", &dato);
-            printf("\nNUMERO NODOS MAYORES A %d: %d", dato, contarNodosLigadosMay(ptrRef2, dato));
-            printf("\n");
-            break;
-        }
-        case 20: { //eliminar nodo
+            
+        case 23:  // Eliminar nodo especifico
             printf("\nIngrese valor a eliminar: ");
             scanf("%d", &dato);
-            if(eliminarNodo(ptrRef2,dato) == 1){
+            if(eliminarNodo(ptrRef2, dato) == 1)
                 printf("\nDato no existe");
-            }else{
-                printf("\nDato eliminiado: %d", dato);
-            }
+            else
+                printf("\nDato eliminado: %d", dato);
             break;
-        }
-        case 21: { //eliminar nodo  menor
+            
+        case 24:  // Eliminar nodo menor
             eliminarNodoMenor(ptrRef2);
             break;
-        }
-        case 22: {//eliminar nodo mayor
+            
+        case 25:  // Eliminar nodo mayor
             eliminarNodoMayor(ptrRef2);
             break;
-        }
-        case 23: {
-            eliminarNodosConUnHijo(ptrRef2);
-            break;
-        }
-        case 24: {
+            
+        case 26:  // Eliminar nodos hoja
             eliminarNodosHoja(ptrRef2);
+            printf("\nNodos hoja eliminados");
             break;
-        }
-        case 25: {
+            
+        case 27:  // Eliminar nodos con un hijo
+            eliminarNodosConUnHijo(ptrRef2);
+            printf("\nNodos con un hijo eliminados");
+            break;
+            
+        case 28:  // Eliminar nodos con dos hijos
             eliminarNodo2Hijos(ptrRef2);
+            printf("\nNodos con dos hijos eliminados");
             break;
-        }
-        case 26:
+            
+        case 29:  // Salir
+            printf("\nSaliendo del programa...\n");
             exit(0);
-            break;    
+            break;
+            
         default:
-            printf("\nIngrese opcion correcta");
+            printf("\nOpcion no valida. Intente nuevamente");
             break;
         }
     }
